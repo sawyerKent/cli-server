@@ -1,0 +1,92 @@
+package handlers
+
+import (
+	"encoding/json"
+	"io"
+	"net/http"
+	"bytes"
+	"strings"
+	"net/url"
+)
+
+func GetEndpoint(url string) (Response, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.HasSuffix(url, "/HappyLang") {
+		var result HappyLangResponse
+		json.Unmarshal(body, &result)
+		return result, nil
+	} else {
+		var result TextResponse
+		json.Unmarshal(body, &result)
+		return result, nil
+	}
+}
+
+func PostEndpoint(urlStr string, data HappyLangResponse) (Response, error) {
+	formData := url.Values{}
+	formData.Add("FRVRID", data.FRVRID)
+	formData.Add("language", data.Language)
+
+	req, err := http.NewRequest("POST", urlStr, strings.NewReader(formData.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if strings.HasSuffix(urlStr, "/HappyLang") {
+		var result HappyLangResponse
+		json.NewDecoder(resp.Body).Decode(&result)
+		return result, nil
+	} else {
+		var result TextResponse
+		json.NewDecoder(resp.Body).Decode(&result)
+		return result, nil
+	}
+}
+
+func PostJsonEndpoint(urlStr string, data HappyLangResponse) (Response, error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", urlStr, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if strings.HasSuffix(urlStr, "/HappyLang") {
+		var result HappyLangResponse
+		json.NewDecoder(resp.Body).Decode(&result)
+		return result, nil
+	} else {
+		var result TextResponse
+		json.NewDecoder(resp.Body).Decode(&result)
+		return result, nil
+	}
+}
