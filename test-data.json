@@ -1,0 +1,23 @@
+{
+    "Group1": [
+      {
+        "name": "Alice",
+        "monthofbdate": "January"
+      },
+      {
+        "name": "Bob",
+        "monthofbdate": "February"
+      }
+    ],
+    "Group2": [
+      {
+        "name": "Charlie",
+        "monthofbdate": "March"
+      },
+      {
+        "name": "David",
+        "monthofbdate": "April"
+      }
+    ]
+  }
+  

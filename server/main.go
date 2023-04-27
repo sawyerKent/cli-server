@@ -24,6 +24,7 @@ func main() {
     e.GET("/heartbeat", handlers.Heartbeat)
     e.GET("/HappyLang", handlers.HappyLang)
     e.POST("/HappyLang", handlers.HappyLangPost)
+    e.POST("/sendjson", handlers.ProcessJson)
 
     // Start server
     address := fmt.Sprintf(":%d", port)
