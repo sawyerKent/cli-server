@@ -5,6 +5,7 @@ import (
 
 	"github.com/sawyerKent/cli-server/server/handlers"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -29,7 +30,7 @@ var getCmd = &cobra.Command{
 		fmt.Println(url)
 		result, err := handlers.GetEndpoint(url)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("Error:", errors.Wrap(err, "failed to get response"))
 			return
 		}
 		switch endpoint {

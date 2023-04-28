@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/sawyerKent/cli-server/server/handlers"
+	"github.com/sawyerKent/cli-server/server/models"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -30,14 +32,14 @@ var postJsonCmd = &cobra.Command{
 		url := baseurl + ":" + port + endpoint
 		fmt.Println("URL:", url)
 
-		data := handlers.HappyLangResponse{
+		data := models.HappyLangResponse{
 			FRVRID:   frvrid,
 			Language: language,
 		}
 		
 		result, err := handlers.PostJsonEndpoint(url, data)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("Error:", errors.Wrap(err, "failed to get response"))
 			return
 		}
 		switch endpoint {

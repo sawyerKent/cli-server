@@ -1,36 +1,36 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sawyerKent/cli-server/server/models"
 )
 
 func ProcessJson(c echo.Context) error {
-	incoming := new(IncomingData)
-	if err := json.NewDecoder(c.Request().Body).Decode(incoming); err != nil {
+	incoming := new(models.IncomingData)
+	if err := c.Bind(incoming); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid JSON format")
 	}
 
-	returnData := make(ReturnData)
-	for group, users := range *incoming {
-		returnUsers := make([]ReturnUser, 0, len(users))
-		for _, user := range users {
-			numericMonth, err := monthToNumeric(user.MonthOfBDate)
+	returnData := make(models.ReturnData)
+	groups := incoming.GetAllGroups()
+	for _, group := range groups {
+		userData, _ := incoming.GetUsersInGroup(group)
+		for _, user := range userData {
+			numericMonth, err := monthToNumeric(user.GetMonthOfBDate())
 			if err != nil {
 				return echo.NewHTTPError(http.StatusBadRequest, "Invalid month format")
 			}
 
-			returnUser := ReturnUser{
-				Name:         user.Name,
-				MonthOfBDate:  user.MonthOfBDate,
+			returnUser := models.ReturnUser{
+				Name:         user.GetName(),
+				MonthOfBDate:  user.GetMonthOfBDate(),
 				NumericMonth: numericMonth,
 			}
-			returnUsers = append(returnUsers, returnUser)
+			returnData.AddUserToGroup(group, returnUser)
 		}
-		returnData[group] = returnUsers
 	}
 
 	return c.JSON(http.StatusOK, returnData)

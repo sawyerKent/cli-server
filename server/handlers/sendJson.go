@@ -1,31 +1,29 @@
 package handlers
 
 import (
-	"os"
+	"bytes"
 	"io"
 	"net/http"
-	"bytes"
+
+	"github.com/sawyerKent/cli-server/server/models"
 )
 
-func SendJson(url, filepath string) ([]byte, error) {
-	// Read the JSON file
-	jsonData, err := os.ReadFile(filepath)
-	if err != nil {
-		return nil, err
-	}
+func SendJson(url string, data models.JsonData) ([]byte, error) {
+    jsonData, err := data.MarshalJSON()
+    if err != nil {
+        return nil, err
+    }
 
-	// Send POST request with JSON data
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	resp, err := http.Post(url, "application/json", io.NopCloser(bytes.NewBuffer(jsonData)))
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	// Read response body
-	responseData, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return nil, err
+    }
 
-	return responseData, nil
+    return body, nil
 }

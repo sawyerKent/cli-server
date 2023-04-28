@@ -5,12 +5,13 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sawyerKent/cli-server/server/models"
 )
 
 func HappyLangPost(c echo.Context) error {
 	contentType := c.Request().Header.Get("Content-Type")
 
-	happyLangRequest := new(HappyLangResponse)
+	happyLangRequest := new(models.HappyLangResponse)
 
 	if contentType == "application/x-www-form-urlencoded" {
 		happyLangRequest.FRVRID = c.FormValue("FRVRID")
@@ -23,7 +24,7 @@ func HappyLangPost(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Invalid Content-Type, only application/x-www-form-urlencoded and application/json are supported")
 	}
 
-	response := HappyLangResponse{
+	response := models.HappyLangResponse{
 		FRVRID:   happyLangRequest.FRVRID,
 		Language: happyLangRequest.Language,
 	}
