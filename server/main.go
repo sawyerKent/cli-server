@@ -5,7 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
-	"cli-server/server/handlers"
+	//"cli-server/server/handlers"
+    "github.com/sawyerKent/cli-server/server/handlers"
 )
 
 func main() {
