@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"cli-server/server/handlers"
+	"github.com/sawyerKent/cli-server/server/handlers"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
